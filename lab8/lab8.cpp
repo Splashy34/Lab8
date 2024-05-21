@@ -97,47 +97,43 @@ private:
         }
     }
 
-    void traverseLevelsDownLeft(Node* node, int* arr, int& index) const
+    void traverseLevelsDownLeft(Node* node, int* arr) const
     {
         if (node == nullptr) return;
         Queue<Node*> q;
         q.queue(node);
-        int* tempArr = new int[size];
-        int count = 0;
+        int index = size - 1;
         while (!q.is_empty())
         {
-            Node* current = q.unqueue();
-            tempArr[count++] = current->data;
-            if (current->left) q.queue(current->left);
-            if (current->right) q.queue(current->right);
+            int levelSize = q.count();
+            for (int i = 0; i < levelSize; ++i)
+            { 
+                Node* current = q.unqueue();
+                arr[index--] = current->data;
+                if (current->right != nullptr) q.queue(current->right);
+                if (current->left != nullptr) q.queue(current->left);
+            } 
         }
-        for (int i = count - 1; i >= 0; --i)
-        {
-            arr[index++] = tempArr[i];
-        }
-        delete[] tempArr;
     }
     
 
-    void traverseLevelsDownRight(Node* node, int* arr, int& index) const
+    void traverseLevelsDownRight(Node* node, int* arr) const
     {
         if (node == nullptr) return;
         Queue<Node*> q;
         q.queue(node);
-        int* tempArr = new int[size];
-        int count = 0;
+        int index = size - 1;
         while (!q.is_empty())
         {
-            Node* current = q.unqueue();
-            tempArr[count++] = current->data;
-            if (current->right) q.queue(current->right);
-            if (current->left) q.queue(current->left);
+            int levelSize = q.count();
+            for (int i = 0; i < levelSize; ++i)
+            {
+                Node* current = q.unqueue();
+                arr[index--] = current->data;
+                if (current->left != nullptr) q.queue(current->left);
+                if (current->right != nullptr) q.queue(current->right);
+            }
         }
-        for (int i = count - 1; i >= 0; --i)
-        {
-            arr[index++] = tempArr[i];
-        }
-        delete[] tempArr;
     }
 
     Node* rotateRight(Node*& node)
@@ -329,10 +325,10 @@ int* Tree::ToArray(Order order) const
         traverseLevelsUpRight(root, arr, index);
         break;
     case LevelsDownLeft:
-        traverseLevelsDownLeft(root, arr, index);
+        traverseLevelsDownLeft(root, arr);
         break;
     case LevelsDownRight:
-        traverseLevelsDownRight(root, arr, index);
+        traverseLevelsDownRight(root, arr);
         break;
     }
     return arr;
